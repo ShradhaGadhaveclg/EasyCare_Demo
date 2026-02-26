@@ -1,4 +1,4 @@
-package com.hospital.patient;
+//package PatientRegistration.main;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,18 +8,12 @@ public class PatientService {
 
     private List<Patient> patients = new ArrayList<>();
 
-    // Register patient
+    // REGISTER
     public boolean registerPatient(Patient patient) {
 
-        if (patient == null) {
+        if (patient == null)
             throw new IllegalArgumentException("Patient cannot be null");
-        }
 
-        if (patient.getAge() <= 0) {
-            throw new IllegalArgumentException("Invalid age");
-        }
-
-        // Check duplicate ID
         for (Patient p : patients) {
             if (p.getId().equals(patient.getId())) {
                 throw new IllegalArgumentException("Patient ID already exists");
@@ -30,20 +24,34 @@ public class PatientService {
         return true;
     }
 
-    // Get patient by ID
+    // LOGIN
+    public boolean login(String id, String password) {
+
+        Optional<Patient> patient = patients.stream()
+                .filter(p -> p.getId().equals(id)
+                        && p.getPassword().equals(password))
+                .findFirst();
+
+        return patient.isPresent();
+    }
+
+    // VIEW
     public Optional<Patient> getPatientById(String id) {
         return patients.stream()
                 .filter(p -> p.getId().equals(id))
                 .findFirst();
     }
 
-    // Get total patient count
+    // REMOVE
+    public boolean removePatient(String id) {
+        return patients.removeIf(p -> p.getId().equals(id));
+    }
+
     public int getTotalPatients() {
         return patients.size();
     }
 
-    // Remove patient
-    public boolean removePatient(String id) {
-        return patients.removeIf(p -> p.getId().equals(id));
+    public void clearAll() {
+        patients.clear();
     }
 }
